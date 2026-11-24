@@ -4,25 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Employee extends Model
+class Visitor extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'room_id',
+        'national_id',
+        'first_name',
+        'last_name',
+        'father_name',
+        'mother_name',
+        'address',
+        'phone',
     ];
 
-    public function room(): BelongsTo
+    public function visitRecords(): HasMany
     {
-        return $this->belongsTo(Room::class);
+        return $this->hasMany(VisitRecord::class);
     }
 
-    public function statusHistories(): HasMany
+    public function getFullNameAttribute(): string
     {
-        return $this->hasMany(VisitStatusHistory::class);
+        return trim("{$this->first_name} {$this->father_name} {$this->last_name}");
     }
 }
