@@ -331,6 +331,7 @@ html.dark .fi-simple-main {
             ->default()
             ->id('admin')
             ->path('admin')
+            ->spa()
             ->login()
             ->brandName(fn () => app()->getLocale() === 'ar'
                 ? 'نظام الزوار - الهيئة العامة للضرائب والرسوم'

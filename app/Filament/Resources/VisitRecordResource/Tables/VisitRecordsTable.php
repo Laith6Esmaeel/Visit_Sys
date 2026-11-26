@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\VisitRecords\Tables;
+namespace App\Filament\Resources\VisitRecordResource\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;

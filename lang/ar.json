@@ -69,6 +69,26 @@
 "Update Transaction Status": "تحديث حالة المعاملة",
 "Add notes about this status change (optional)": "أضف ملاحظة حول تغيير الحالة (اختياري)",
 "Save Status Update": "حفظ التحديث",
-"No status updates recorded yet.": "لا توجد تحديثات مسجلة لهذه المعاملة بعد."
+"No status updates recorded yet.": "لا توجد تحديثات مسجلة لهذه المعاملة بعد.",
+"In your directorate": "ضمن مديريتك",
+"Directorate Transactions": "معاملات المديرية",
+"Today": "اليوم",
+"Completed": "المنجزة",
+"Total Visits": "إجمالي الزيارات",
+"Visitors Inside Now": "الزوار داخل المبنى حالياً",
+"Active visits without check-out": "زيارات نشطة لم تسجّل خروجاً",
+"Total Visitors": "إجمالي الزوار",
+"Registered visitors": "الزوار المسجّلون في النظام",
+"Directorates / Departments": "المديريات / الدوائر",
+"Rooms & Employees": "الغرف والموظفون",
+"Rooms / Employees": "الغرف / الموظفون",
+"Completed Transactions": "المعاملات المنجزة",
+"All completed visits": "إجمالي المعاملات المكتملة",
+"Visits Trend (Last 7 Days)": "حركة الزيارات (آخر 7 أيام)",
+"Visits": "الزيارات",
+"Transactions by Status": "توزيع المعاملات حسب الحالة",
+"Transactions": "المعاملات",
+"Visits by Directorate": "الزيارات حسب المديرية",
+"Visits by Department (Your Directorate)": "الزيارات حسب الدوائر (مديريتك)"
 
 }

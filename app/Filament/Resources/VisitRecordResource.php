@@ -62,7 +62,6 @@ class VisitRecordResource extends Resource
                             ->relationship('visitor', 'first_name')
                             ->getOptionLabelFromRecordUsing(fn($record) => "{$record->full_name} ({$record->national_id})")
                             ->searchable(['first_name', 'last_name', 'national_id', 'phone'])
-                            ->preload()
                             ->required()
                             ->createOptionForm([
                                 TextInput::make('national_id')
@@ -135,7 +134,7 @@ class VisitRecordResource extends Resource
 
                         DateTimePicker::make('check_in')
                             ->label(__('Check-in Time'))
-                            ->default(now())
+                            ->default(fn() => now())
                             ->required(),
 
                         DateTimePicker::make('check_out')
@@ -229,6 +228,12 @@ class VisitRecordResource extends Resource
         ];
     }
 
+    //n+1
+public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+{
+    return parent::getEloquentQuery()
+        ->with(['visitor', 'directorate', 'room.department']);
+}
     public static function getPages(): array
     {
         return [

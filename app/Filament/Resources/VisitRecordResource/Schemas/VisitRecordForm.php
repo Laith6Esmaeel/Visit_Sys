@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\VisitRecords\Schemas;
+namespace App\Filament\Resources\VisitRecordResource\Schemas;
 
 use App\Enums\VisitStatus;
 use Filament\Forms\Components\DateTimePicker;
