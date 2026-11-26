@@ -59,5 +59,16 @@
     "Email": "البريد الإلكتروني",
     "Password": "كلمة المرور",
     "Roles": "الأدوار والصلاحيات",
-    "Created At": "تاريخ الإنشاء"
+    "Created At": "تاريخ الإنشاء",
+    "Track Visit by Badge": "متابعة معاملة برقم البطاقة",
+"Search": "بحث",
+"Please enter a badge number": "يرجى إدخال رقم البطاقة",
+"No visit found with this badge number": "لم يتم العثور على زيارة بهذا الرقم",
+"Your user account is not linked to an employee": "حسابك غير مرتبط بسجل موظف",
+"Transaction status updated successfully": "تم تحديث حالة المعاملة بنجاح",
+"Update Transaction Status": "تحديث حالة المعاملة",
+"Add notes about this status change (optional)": "أضف ملاحظة حول تغيير الحالة (اختياري)",
+"Save Status Update": "حفظ التحديث",
+"No status updates recorded yet.": "لا توجد تحديثات مسجلة لهذه المعاملة بعد."
+
 }

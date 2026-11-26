@@ -31,6 +31,9 @@ class StatusHistoriesRelationManager extends RelationManager
                 Select::make('employee_id')
                     ->label(__('Employee'))
                     ->relationship('employee', 'name')
+                    ->default(fn() => auth()->user()?->employee_id)
+                    ->disabled(fn() => filled(auth()->user()?->employee_id) && ! auth()->user()?->hasRole('super_admin'))
+                    ->dehydrated()
                     ->searchable()
                     ->preload()
                     ->required(),

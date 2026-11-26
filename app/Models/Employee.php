@@ -25,4 +25,8 @@ class Employee extends Model
     {
         return $this->hasMany(VisitStatusHistory::class);
     }
+    public function user(): \Illuminate\Database\Eloquent\Relations\HasOne
+{
+    return $this->hasOne(User::class);
+}
 }

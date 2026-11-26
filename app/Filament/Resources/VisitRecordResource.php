@@ -60,7 +60,7 @@ class VisitRecordResource extends Resource
                         Select::make('visitor_id')
                             ->label(__('Visitor'))
                             ->relationship('visitor', 'first_name')
-                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->full_name} ({$record->national_id})")
+                            ->getOptionLabelFromRecordUsing(fn($record) => "{$record->full_name} ({$record->national_id})")
                             ->searchable(['first_name', 'last_name', 'national_id', 'phone'])
                             ->preload()
                             ->required()
@@ -100,7 +100,7 @@ class VisitRecordResource extends Resource
                             ->searchable()
                             ->preload()
                             ->live()
-                            ->afterStateUpdated(fn (Set $set) => $set('room_id', null))
+                            ->afterStateUpdated(fn(Set $set) => $set('room_id', null))
                             ->required(),
 
                         Select::make('room_id')
@@ -111,7 +111,7 @@ class VisitRecordResource extends Resource
                                     return Room::pluck('room_number', 'id');
                                 }
 
-                                return Room::whereHas('department', fn ($q) => $q->where('directorate_id', $directorateId))
+                                return Room::whereHas('department', fn($q) => $q->where('directorate_id', $directorateId))
                                     ->pluck('room_number', 'id');
                             })
                             ->searchable()
@@ -197,7 +197,7 @@ class VisitRecordResource extends Resource
                     ->label(__('Check-out'))
                     ->icon('heroicon-o-arrow-right-start-on-rectangle')
                     ->color('warning')
-                    ->visible(fn (VisitRecord $record): bool => is_null($record->check_out))
+                    ->visible(fn(VisitRecord $record): bool => is_null($record->check_out))
                     ->requiresConfirmation()
                     ->action(function (VisitRecord $record) {
                         $record->update(['check_out' => now()]);
@@ -208,6 +208,12 @@ class VisitRecordResource extends Resource
                     }),
                 EditAction::make(),
                 DeleteAction::make(),
+                Action::make('print_badge')
+                    ->label(__('Print Badge'))
+                    ->icon('heroicon-o-printer')
+                    ->color('info')
+                    ->url(fn(VisitRecord $record): string => route('visit-records.print-badge', $record))
+                    ->openUrlInNewTab(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

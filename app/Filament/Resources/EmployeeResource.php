@@ -17,6 +17,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class EmployeeResource extends Resource
 {
@@ -41,6 +42,23 @@ class EmployeeResource extends Resource
         return __('Employees');
     }
 
+    /**
+     * 1. تقييد الجدول: مدير المديرية يرى فقط الموظفين التابعين لغرف دوائر مديريته
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if ($user && $user->hasRole('directorate_manager') && ! $user->hasRole('super_admin')) {
+            $query->whereHas('room.department', function (Builder $q) use ($user) {
+                $q->where('directorate_id', $user->directorate_id);
+            });
+        }
+
+        return $query;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -52,9 +70,26 @@ class EmployeeResource extends Resource
                             ->label(__('Employee Name'))
                             ->required()
                             ->maxLength(255),
+
+                        /**
+                         * 2. تقييد قائمة الغرف في الفورم: تظهر فقط غرف دوائر مديريته
+                         */
                         Select::make('room_id')
                             ->label(__('Room'))
-                            ->relationship('room', 'room_number')
+                            ->relationship(
+                                name: 'room',
+                                titleAttribute: 'room_number',
+                                modifyQueryUsing: function (Builder $query) {
+                                    $user = auth()->user();
+
+                                    if ($user && $user->hasRole('directorate_manager') && ! $user->hasRole('super_admin')) {
+                                        $query->whereHas('department', fn (Builder $q) => $q->where('directorate_id', $user->directorate_id));
+                                    }
+
+                                    return $query->with('department');
+                                }
+                            )
+                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->room_number} — {$record->department?->name}")
                             ->searchable()
                             ->preload()
                             ->required(),
@@ -73,18 +108,40 @@ class EmployeeResource extends Resource
                     ->label(__('Employee Name'))
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('room.department.name')
+                    ->label(__('Department'))
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->color('info'),
                 TextColumn::make('room.room_number')
                     ->label(__('Room Number'))
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('room.department.name')
-                    ->label(__('Department'))
-                    ->sortable(),
+                TextColumn::make('room.department.directorate.name')
+                    ->label(__('Directorate'))
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                /**
+                 * 3. تقييد فلتر الغرف ليعرض غرف مديريته فقط
+                 */
                 SelectFilter::make('room_id')
                     ->label(__('Room'))
-                    ->relationship('room', 'room_number')
+                    ->relationship(
+                        name: 'room',
+                        titleAttribute: 'room_number',
+                        modifyQueryUsing: function (Builder $query) {
+                            $user = auth()->user();
+
+                            if ($user && $user->hasRole('directorate_manager') && ! $user->hasRole('super_admin')) {
+                                $query->whereHas('department', fn (Builder $q) => $q->where('directorate_id', $user->directorate_id));
+                            }
+
+                            return $query;
+                        }
+                    )
                     ->searchable()
                     ->preload(),
             ])
@@ -102,9 +159,9 @@ class EmployeeResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEmployees::route('/'),
-            'create' => Pages\CreateEmployee::route('/create'),
-            'edit' => Pages\EditEmployee::route('/{record}/edit'),
+            'index' => pages\ListEmployees::route('/'),
+            'create' => pages\CreateEmployee::route('/create'),
+            'edit' => pages\EditEmployee::route('/{record}/edit'),
         ];
     }
 }

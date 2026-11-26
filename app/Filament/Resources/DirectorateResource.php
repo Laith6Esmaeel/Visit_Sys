@@ -15,7 +15,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-
+use Illuminate\Database\Eloquent\Builder;
 class DirectorateResource extends Resource
 {
     protected static ?string $model = Directorate::class;
@@ -86,7 +86,17 @@ class DirectorateResource extends Resource
                 ]),
             ]);
     }
+public static function getEloquentQuery(): Builder
+{
+    $query = parent::getEloquentQuery();
+    $user = auth()->user();
 
+    if ($user && $user->hasRole('directorate_manager') && ! $user->hasRole('super_admin')) {
+        $query->where('id', $user->directorate_id);
+    }
+
+    return $query;
+}
     public static function getPages(): array
     {
         return [

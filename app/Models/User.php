@@ -11,12 +11,33 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    // protected $fillable = [
+    //     'name',
+    //     'email',
+    //     'password',
+    // ];
+// protected $fillable = [
+//     'name',
+//     'email',
+//     'password',
+//     'directorate_id',
+// ];
+protected $fillable = [
+    'name',
+    'email',
+    'password',
+    'directorate_id',
+    'employee_id',
+];
 
+public function employee(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+{
+    return $this->belongsTo(Employee::class);
+}
+public function directorate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+{
+    return $this->belongsTo(Directorate::class);
+}
     protected $hidden = [
         'password',
         'remember_token',

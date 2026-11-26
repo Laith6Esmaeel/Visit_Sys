@@ -54,4 +54,14 @@ class VisitRecord extends Model
     {
         return $this->hasMany(VisitStatusHistory::class);
     }
+    protected static function booted(): void
+{
+    static::creating(function (VisitRecord $visit) {
+        if (empty($visit->badge_number)) {
+            $today = now()->format('Ymd');
+            $countToday = static::whereDate('created_at', today())->count() + 1;
+            $visit->badge_number = sprintf('V-%s-%04d', $today, $countToday);
+        }
+    });
+}
 }

@@ -19,9 +19,18 @@ class ListVisitRecords extends ListRecords
         ];
     }
 
-    public function processCheckout(string $badgeNumber): void
+    public function processCheckout(string $scannedData): void
     {
-        $visit = VisitRecord::where('badge_number', trim($badgeNumber))
+        $scannedData = trim($scannedData);
+
+        // استخراج رقم البادج من نص الـ QR إذا كان بصيغة BADGE:...|ID:...
+        if (preg_match('/BADGE:([^|]+)/i', $scannedData, $matches)) {
+            $badgeNumber = trim($matches[1]);
+        } else {
+            $badgeNumber = $scannedData;
+        }
+
+        $visit = VisitRecord::where('badge_number', $badgeNumber)
             ->whereNull('check_out')
             ->latest('check_in')
             ->first();
@@ -29,17 +38,20 @@ class ListVisitRecords extends ListRecords
         if (! $visit) {
             Notification::make()
                 ->title(__('No active visit found for this badge'))
+                ->body($badgeNumber)
                 ->danger()
                 ->send();
 
             return;
         }
 
-        $visit->update(['check_out' => now()]);
+        $visit->update([
+            'check_out' => now(),
+        ]);
 
         Notification::make()
             ->title(__('Visitor checked out successfully'))
-            ->body("{$visit->visitor->full_name} — #{$visit->badge_number}")
+            ->body("{$visit->visitor?->full_name} — {$visit->badge_number}")
             ->success()
             ->send();
     }
